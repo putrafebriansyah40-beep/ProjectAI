@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project AI - Logika Fuzzy Kecepatan Kipas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .value-display {
+            text-align: right;
+            font-size: 14px;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .result-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>AI Kecepatan Kipas<br><small>(Logika Fuzzy)</small></h2>
+
+    <div class="form-group">
+        <label for="suhu">Suhu Ruangan (°C)</label>
+        <input type="range" id="suhu" min="15" max="40" value="25" oninput="hitungFuzzy()">
+        <div class="value-display"><span id="suhuVal">25</span> °C</div>
+    </div>
+
+    <div class="form-group">
+        <label for="orang">Jumlah Orang</label>
+        <input type="range" id="orang" min="1" max="50" value="10" oninput="hitungFuzzy()">
+        <div class="value-display"><span id="orangVal">10</span> Orang</div>
+    </div>
+
+    <div class="result-box">
+        <label>Kecepatan Kipas Optimal (AI):</label>
+        <div class="result-value"><span id="kipasVal">0</span> RPM</div>
+    </div>
+</div>
+
+<script>
+    function hitungFuzzy() {
+        // 1. Ambil nilai input dari user
+        let suhu = parseFloat(document.getElementById("suhu").value);
+        let orang = parseFloat(document.getElementById("orang").value);
+
+        // Update tampilan angka di web
+        document.getElementById("suhuVal").innerText = suhu;
+        document.getElementById("orangVal").innerText = orang;
+
+        // 2. FUZZIFIKASI (Menentukan derajat keanggotaan)
+        // Suhu: Dingin (15-25), Panas (25-40)
+        let suhuDingin = (suhu <= 25) ? 1 : ((suhu >= 40) ? 0 : (40 - suhu) / (40 - 25));
+        let suhuPanas = (suhu >= 40) ? 1 : ((suhu <= 25) ? 0 : (suhu - 25) / (40 - 25));
+
+        // Orang: Sedikit (1-20), Banyak (20-50)
+        let orangSedikit = (orang <= 20) ? 1 : ((orang >= 50) ? 0 : (50 - orang) / (50 - 20));
+        let orangBanyak = (orang >= 50) ? 1 : ((orang <= 20) ? 0 : (orang - 20) / (50 - 20));
+
+        // 3. INFERENSI (Evaluasi Aturan menggunakan fungsi MIN)
+        // Rule 1: JIKA Suhu Dingin DAN Orang Sedikit, MAKA Kipas Lambat (Max 500 RPM)
+        let rule1 = Math.min(suhuDingin, orangSedikit);
+        let kipasLambat = rule1 * 500;
+
+        // Rule 2: JIKA Suhu Panas ATAU Orang Banyak, MAKA Kipas Cepat (Max 2000 RPM)
+        let rule2 = Math.max(suhuPanas, orangBanyak);
+        let kipasCepat = rule2 * 2000;
+
+        // 4. DEFUZZIFIKASI (Mencari nilai tunggal menggunakan rata-rata terbobot / Sugeno-style approximation)
+        let pembilang = kipasLambat + kipasCepat;
+        let penyebut = rule1 + rule2;
+
+        let hasilRPM = 0;
+        if (penyebut !== 0) {
+            hasilRPM = pembilang / penyebut;
+        }
+
+        // Tampilkan hasil ke layar
+        document.getElementById("kipasVal").innerText = Math.round(hasilRPM);
+    }
+
+    // Panggil fungsi saat halaman pertama kali dimuat
+    window.onload = hitungFuzzy;
+</script>
+
+</body>
+</html>
