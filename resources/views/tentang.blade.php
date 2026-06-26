@@ -27,10 +27,11 @@
             <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
                 Sistem ini tidak hanya menggunakan satu, melainkan menandingkan tiga arsitektur inferensi sistem Logika Fuzzy yang paling populer (Mamdani, Sugeno, dan Tsukamoto) dalam memproses parameter masukan untuk mencapai konklusi prioritas yang paling masuk akal bagi perusahaan.
             </p>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Stack Info -->
                 <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-xl border border-gray-100 dark:border-gray-700">
+
                     <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center">
                         <i class="fas fa-layer-group text-blue-500 mr-2"></i> Teknologi
                     </h3>
@@ -41,12 +42,13 @@
                         <li class="flex items-center text-gray-600 dark:text-gray-300"><i class="fab fa-js-square text-yellow-500 w-6"></i> Vanilla JavaScript</li>
                     </ul>
                 </div>
-                
+
                 <!-- Developer Info -->
                 <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-xl border border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center">
-                        <i class="fas fa-user-graduate text-cyan-500 mr-2"></i> Pengembang
+                        <i class="fas fa-diagram-project text-cyan-500 mr-2"></i> Tentang Proyek
                     </h3>
+
                     <div class="flex items-start">
                         <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4 shrink-0 shadow-md">
                             AI
@@ -61,5 +63,56 @@
             </div>
         </div>
     </div>
+
+    <!-- Developer Team Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 mb-12 relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 text-gray-50 dark:text-gray-700/20 text-[12rem]">
+            <i class="fas fa-people-group"></i>
+        </div>
+        <div class="relative z-10">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                <i class="fas fa-user-friends text-cyan-500 mr-3"></i> Developer Team
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 flex items-center justify-center text-cyan-700 dark:text-cyan-300">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-900 dark:text-gray-100">Febriansyah Putra</p>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">NIM: 2411081030</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 flex items-center justify-center text-cyan-700 dark:text-cyan-300">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-900 dark:text-gray-100">Zikra Revanzha</p>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">NIM: 2411082025</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 flex items-center justify-center text-cyan-700 dark:text-cyan-300">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-900 dark:text-gray-100">Rezki Andikhe Wahyudi</p>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">NIM: 2411082028</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
+

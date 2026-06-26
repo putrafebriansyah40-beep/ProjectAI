@@ -71,6 +71,7 @@
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700/50">
                     @forelse($histories as $history)
                     <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/20 transition-colors">
+
                         <td class="p-4 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap font-medium">
                             {{ $history->created_at->format('d M Y, H:i') }}
                         </td>
@@ -108,10 +109,27 @@
                                 </span>
                             </div>
                         </td>
+
+                        <!-- Aksi -->
+                        <td class="p-4 text-center border-l border-gray-100 dark:border-gray-700/50">
+                            <form action="{{ route('history.destroy', $history->id) }}" method="POST" class="inline-block js-delete-history-form">
+                                @csrf
+                                @method('DELETE')
+                                <input type="hidden" name="history_id" value="{{ $history->id }}" />
+                                <button type="button" class="js-delete-history-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-sm transition-colors"
+                                    data-delete-url="{{ route('history.destroy', $history->id) }}"
+                                    data-history-label="Riwayat {{ $history->created_at->format('d M Y, H:i') }}">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
+
                     </tr>
+
                     @empty
                     <tr>
-                        <td colspan="5" class="py-16 text-center">
+                        <td colspan="6" class="py-16 text-center">
+
                             <div class="w-20 h-20 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-600 text-3xl mb-4">
                                 <i class="fas fa-folder-open"></i>
                             </div>
@@ -128,4 +146,57 @@
         </div>
     </div>
 </div>
+
 @endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('.js-delete-history-btn');
+
+        buttons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const label = btn.getAttribute('data-history-label') || 'riwayat';
+                const actionUrl = btn.getAttribute('data-delete-url');
+
+                // Modal sederhana yang mengikuti theme (Tailwind)
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 z-50 flex items-center justify-center';
+                modal.innerHTML = `
+                    <div class="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+                    <div class="relative w-full max-w-md mx-4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                        <div class="p-5 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/30 flex items-center justify-center text-red-700 dark:text-red-300">
+                                    <i class="fa-solid fa-trash"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-gray-900 dark:text-gray-100 font-bold text-lg">Konfirmasi Hapus</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">Apakah Anda yakin menghapus <span class="font-semibold">${label}</span>?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-5 flex justify-end gap-3">
+                            <button type="button" class="px-4 py-2 rounded-lg text-sm font-bold bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 js-modal-cancel">Batal</button>
+                            <form method="POST" action="${actionUrl}" class="js-modal-form">
+                                <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}" />
+                                <input type="hidden" name="_method" value="DELETE" />
+                                <button type="submit" class="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 hover:bg-red-700 text-white js-modal-confirm">Hapus</button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+
+                const close = () => modal.remove();
+                modal.querySelector('.js-modal-cancel').addEventListener('click', close);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) close();
+                });
+
+                document.body.appendChild(modal);
+            });
+        });
+    });
+</script>
+@endsection
+

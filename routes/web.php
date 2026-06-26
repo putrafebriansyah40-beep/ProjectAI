@@ -15,4 +15,6 @@ Route::post('/simulasi', [SimulasiController::class, 'calculate'])->name('simula
 Route::get('/perbandingan', [PerbandinganController::class, 'index'])->name('perbandingan');
 Route::post('/perbandingan', [PerbandinganController::class, 'calculate'])->name('perbandingan.calculate');
 Route::get('/history', [HistoryController::class, 'index'])->name('history');
+Route::delete('/history/{id}', [HistoryController::class, 'destroy'])->name('history.destroy');
+
 Route::get('/tentang', [TentangController::class, 'index'])->name('tentang');

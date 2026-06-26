@@ -28,4 +28,16 @@ class HistoryController extends Controller
         // 3. Mengirimkan data 'histories' dan 'stats' ke tampilan history
         return view('history', compact('histories', 'stats'));
     }
+
+    /**
+     * Menghapus satu riwayat (record) dari tabel bugs
+     */
+    public function destroy(int $id)
+    {
+        $history = Bug::findOrFail($id);
+        $history->delete();
+
+        return redirect()->route('history')->with('success', 'Riwayat berhasil dihapus.');
+    }
 }
+
