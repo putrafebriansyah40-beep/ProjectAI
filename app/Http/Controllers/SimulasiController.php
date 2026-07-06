@@ -7,6 +7,7 @@ use App\Models\Bug;
 use App\Services\FuzzyMamdaniService;
 use App\Services\FuzzySugenoService;
 use App\Services\FuzzyTsukamotoService;
+use App\Services\FuzzyRuleService;
 
 class SimulasiController extends Controller
 {
@@ -16,15 +17,18 @@ class SimulasiController extends Controller
     protected $mamdaniService;
     protected $sugenoService;
     protected $tsukamotoService;
+    protected $ruleService;
 
     public function __construct(
         FuzzyMamdaniService $mamdaniService,
         FuzzySugenoService $sugenoService,
-        FuzzyTsukamotoService $tsukamotoService
+        FuzzyTsukamotoService $tsukamotoService,
+        FuzzyRuleService $ruleService
     ) {
         $this->mamdaniService = $mamdaniService;
         $this->sugenoService = $sugenoService;
         $this->tsukamotoService = $tsukamotoService;
+        $this->ruleService = $ruleService;
     }
 
     /**
@@ -70,6 +74,7 @@ class SimulasiController extends Controller
         $mamdaniResult   = $this->mamdaniService->calculate($severity, $impact, $affectedUsers);
         $sugenoResult    = $this->sugenoService->calculate($severity, $impact, $affectedUsers);
         $tsukamotoResult = $this->tsukamotoService->calculate($severity, $impact, $affectedUsers);
+        $activeRule      = $this->ruleService->getActiveRule($severity, $impact, $affectedUsers);
 
         // 3. Simpan hasil ke database (tabel bugs)
         Bug::create([
@@ -92,6 +97,7 @@ class SimulasiController extends Controller
             'mamdaniResult'   => $mamdaniResult,
             'sugenoResult'    => $sugenoResult,
             'tsukamotoResult' => $tsukamotoResult,
+            'activeRule'      => $activeRule,
             'success_message' => 'Simulasi berhasil dihitung dan disimpan ke riwayat!'
         ]);
     }

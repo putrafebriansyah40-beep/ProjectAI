@@ -16,15 +16,15 @@
 
     <!-- Alert / Success message -->
     @if(isset($success_message))
-    <div class="bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 text-green-700 dark:text-green-400 p-4 mb-8 rounded shadow-sm flex items-center">
+    <div class="bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 text-green-700 dark:text-green-400 p-4 mb-8 rounded shadow-sm flex items-center animate-fade-in-up">
         <i class="fas fa-check-circle text-xl mr-3"></i>
         {{ $success_message }}
     </div>
     @endif
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <!-- Form Section -->
-        <div class="lg:col-span-5 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700/50 overflow-hidden">
+        <div class="lg:col-span-5 sticky top-24 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:shadow-2xl z-20">
             <div class="bg-gradient-to-r from-blue-600 to-cyan-600 p-6">
                 <h2 class="text-xl font-bold text-white flex items-center">
                     <i class="fas fa-sliders-h mr-3"></i> Parameter Input
@@ -33,6 +33,17 @@
             
             <form action="{{ route('simulasi.calculate') }}" method="POST" class="p-6 md:p-8">
                 @csrf
+
+                <!-- Quick Sample Data -->
+                <div class="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Contoh Data Cepat:</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="fillSampleData(20, 25, 15)" class="px-3 py-1.5 text-xs font-bold bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50 rounded-full transition-colors"><i class="fas fa-bolt text-[10px] mr-1"></i> Ringan</button>
+                        <button type="button" onclick="fillSampleData(50, 45, 40)" class="px-3 py-1.5 text-xs font-bold bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:hover:bg-yellow-900/50 rounded-full transition-colors"><i class="fas fa-exclamation text-[10px] mr-1"></i> Sedang</button>
+                        <button type="button" onclick="fillSampleData(75, 80, 70)" class="px-3 py-1.5 text-xs font-bold bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:hover:bg-orange-900/50 rounded-full transition-colors"><i class="fas fa-exclamation-triangle text-[10px] mr-1"></i> Berat</button>
+                        <button type="button" onclick="fillSampleData(95, 95, 90)" class="px-3 py-1.5 text-xs font-bold bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50 rounded-full transition-colors"><i class="fas fa-fire text-[10px] mr-1"></i> Critical</button>
+                    </div>
+                </div>
 
                 <!-- Severity -->
                 <div class="mb-8">
@@ -67,23 +78,124 @@
                     @error('affected_users') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
-                <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-xl font-bold text-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                    <i class="fas fa-calculator mr-2"></i> Hitung Prioritas
+                <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-xl font-bold text-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 group relative overflow-hidden flex items-center justify-center">
+                    <span id="btn-text" class="flex items-center"><i class="fas fa-calculator mr-2 group-hover:rotate-12 transition-transform duration-300"></i> Hitung Prioritas</span>
+                    <span id="btn-loading" class="hidden flex items-center"><i class="fas fa-circle-notch fa-spin mr-2"></i> Memproses...</span>
+                    <div class="absolute inset-0 h-full w-full bg-white/20 scale-0 group-active:scale-100 rounded-xl transition-transform duration-300 opacity-0 group-active:opacity-100"></div>
                 </button>
             </form>
         </div>
 
         <!-- Results Section -->
-        <div class="lg:col-span-7">
+        <div class="lg:col-span-7 animate-fade-in-up">
             @if(isset($mamdaniResult))
+                <!-- Section Proses Perhitungan -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700/50 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-100 dark:border-gray-700 pb-3">
+                        <i class="fas fa-microchip text-blue-500 mr-2"></i> Proses Perhitungan
+                    </h3>
+                    <div class="flex items-center justify-between relative px-2 sm:px-6">
+                        <!-- Garis penghubung -->
+                        <div class="absolute left-6 right-6 top-5 h-1 bg-gray-200 dark:bg-gray-700 z-0"></div>
+                        <div class="absolute left-6 right-6 top-5 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 z-0 animate-pulse"></div>
+                        
+                        <!-- Steps -->
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg animate-bounce" style="animation-delay: 0s;">
+                                <i class="fas fa-keyboard"></i>
+                            </div>
+                            <span class="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 text-center">Input<br>Data</span>
+                        </div>
+                        
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg animate-bounce" style="animation-delay: 0.1s;">
+                                <i class="fas fa-random"></i>
+                            </div>
+                            <span class="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 text-center">Fuzzifikasi</span>
+                        </div>
+                        
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-full bg-cyan-600 text-white flex items-center justify-center shadow-lg animate-bounce" style="animation-delay: 0.2s;">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <span class="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 text-center">Evaluasi<br>Rule</span>
+                        </div>
+                        
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-full bg-cyan-500 text-white flex items-center justify-center shadow-lg animate-bounce" style="animation-delay: 0.3s;">
+                                <i class="fas fa-filter"></i>
+                            </div>
+                            <span class="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 text-center">Defuzzifikasi</span>
+                        </div>
+                        
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white flex items-center justify-center shadow-lg animate-bounce" style="animation-delay: 0.4s;">
+                                <i class="fas fa-check-double"></i>
+                            </div>
+                            <span class="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 text-center">Hasil<br>Prioritas</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Section Rule yang Digunakan -->
+                @if(isset($activeRule))
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700/50 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4 border-b border-gray-100 dark:border-gray-700 pb-3">
+                        <i class="fas fa-list-ul text-blue-500 mr-2"></i> Rule yang Digunakan
+                    </h3>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-5 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-24 h-24 bg-blue-100 dark:bg-blue-800 rounded-full opacity-50 transform translate-x-8 -translate-y-8"></div>
+                        <div class="relative z-10">
+                            <div class="text-sm text-gray-600 dark:text-gray-400 font-bold mb-2 uppercase tracking-wider">Rule dengan kontribusi terbesar:</div>
+                            <div class="font-mono text-lg text-gray-800 dark:text-gray-200 mb-4 bg-white dark:bg-gray-800 p-4 rounded border border-gray-200 dark:border-gray-700 shadow-inner">
+                                <span class="text-blue-600 dark:text-blue-400">IF</span> Severity {{ $activeRule['severity'] }}<br>
+                                <span class="text-blue-600 dark:text-blue-400">AND</span> Impact {{ $activeRule['impact'] }}<br>
+                                <span class="text-blue-600 dark:text-blue-400">AND</span> Users {{ $activeRule['users'] }}<br>
+                                <br>
+                                <span class="text-green-600 dark:text-green-400">THEN</span> Priority <span class="font-bold">{{ $activeRule['priority'] }}</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between mt-4">
+                                <div class="bg-white dark:bg-gray-800 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 font-bold text-gray-700 dark:text-gray-300">
+                                    <span class="text-gray-500 text-sm mr-2">Firing Strength (α):</span>
+                                    <span class="text-blue-600 dark:text-blue-400">{{ number_format($activeRule['alpha'], 2) }}</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-4 italic border-l-4 border-blue-500 pl-3">
+                                "Rule di atas memberikan kontribusi terbesar sehingga sistem menghasilkan prioritas {{ $activeRule['priority'] }}."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 @php
                     function getRecommendation($label) {
                         switch($label) {
-                            case 'Low': return 'Dapat diperbaiki nanti jika ada waktu luang.';
-                            case 'Medium': return 'Perlu dijadwalkan pada sprint atau rilis minor berikutnya.';
-                            case 'High': return 'Segera ditangani, prioritas utama tim saat ini.';
-                            case 'Critical': return 'Wajib diperbaiki segera sebelum sistem dilanjutkan atau rilis.';
+                            case 'Low': return 'Dapat diperbaiki pada sprint berikutnya.';
+                            case 'Medium': return 'Perlu dijadwalkan dalam waktu dekat.';
+                            case 'High': return 'Sebaiknya segera diperbaiki.';
+                            case 'Critical': return 'Wajib diperbaiki sebelum release.';
                             default: return 'Tidak diketahui.';
+                        }
+                    }
+
+                    function getAlertClass($label) {
+                        switch($label) {
+                            case 'Low': return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400';
+                            case 'Medium': return 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-400';
+                            case 'High': return 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-400';
+                            case 'Critical': return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400';
+                            default: return 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-400';
+                        }
+                    }
+
+                    function getAlertIcon($label) {
+                        switch($label) {
+                            case 'Low': return 'fa-check-circle text-green-500';
+                            case 'Medium': return 'fa-exclamation-circle text-yellow-500';
+                            case 'High': return 'fa-exclamation-triangle text-orange-500';
+                            case 'Critical': return 'fa-radiation text-red-500';
+                            default: return 'fa-info-circle text-gray-500';
                         }
                     }
 
@@ -125,16 +237,19 @@
                             </div>
                             
                             <div class="flex items-center mb-4">
-                                <span class="px-3 py-1 rounded text-white text-sm font-bold {{ getBgClass($mamdaniResult['label']) }}">
+                                <span class="px-3 py-1 rounded-full text-white text-xs font-bold {{ getBgClass($mamdaniResult['label']) }} shadow-sm">
                                     {{ $mamdaniResult['label'] }} Priority
                                 </span>
                             </div>
                             
-                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                                <p class="text-sm text-gray-700 dark:text-gray-300 flex items-start">
-                                    <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-2"></i>
-                                    <span><strong>Rekomendasi:</strong> {{ getRecommendation($mamdaniResult['label']) }}</span>
-                                </p>
+                            <div class="rounded-xl p-4 border {{ getAlertClass($mamdaniResult['label']) }} flex items-start shadow-sm transition-all hover:shadow-md">
+                                <div class="text-xl mr-3 mt-0.5">
+                                    <i class="fas {{ getAlertIcon($mamdaniResult['label']) }}"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold mb-1 uppercase tracking-wider opacity-80">Rekomendasi Tindakan</h4>
+                                    <p class="text-sm font-medium">{{ getRecommendation($mamdaniResult['label']) }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -155,16 +270,19 @@
                             </div>
                             
                             <div class="flex items-center mb-4">
-                                <span class="px-3 py-1 rounded text-white text-sm font-bold {{ getBgClass($sugenoResult['label']) }}">
+                                <span class="px-3 py-1 rounded-full text-white text-xs font-bold {{ getBgClass($sugenoResult['label']) }} shadow-sm">
                                     {{ $sugenoResult['label'] }} Priority
                                 </span>
                             </div>
                             
-                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                                <p class="text-sm text-gray-700 dark:text-gray-300 flex items-start">
-                                    <i class="fas fa-info-circle text-cyan-500 mt-0.5 mr-2"></i>
-                                    <span><strong>Rekomendasi:</strong> {{ getRecommendation($sugenoResult['label']) }}</span>
-                                </p>
+                            <div class="rounded-xl p-4 border {{ getAlertClass($sugenoResult['label']) }} flex items-start shadow-sm transition-all hover:shadow-md">
+                                <div class="text-xl mr-3 mt-0.5">
+                                    <i class="fas {{ getAlertIcon($sugenoResult['label']) }}"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold mb-1 uppercase tracking-wider opacity-80">Rekomendasi Tindakan</h4>
+                                    <p class="text-sm font-medium">{{ getRecommendation($sugenoResult['label']) }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -185,28 +303,31 @@
                             </div>
                             
                             <div class="flex items-center mb-4">
-                                <span class="px-3 py-1 rounded text-white text-sm font-bold {{ getBgClass($tsukamotoResult['label']) }}">
+                                <span class="px-3 py-1 rounded-full text-white text-xs font-bold {{ getBgClass($tsukamotoResult['label']) }} shadow-sm">
                                     {{ $tsukamotoResult['label'] }} Priority
                                 </span>
                             </div>
                             
-                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
-                                <p class="text-sm text-gray-700 dark:text-gray-300 flex items-start">
-                                    <i class="fas fa-info-circle text-teal-500 mt-0.5 mr-2"></i>
-                                    <span><strong>Rekomendasi:</strong> {{ getRecommendation($tsukamotoResult['label']) }}</span>
-                                </p>
+                            <div class="rounded-xl p-4 border {{ getAlertClass($tsukamotoResult['label']) }} flex items-start shadow-sm transition-all hover:shadow-md">
+                                <div class="text-xl mr-3 mt-0.5">
+                                    <i class="fas {{ getAlertIcon($tsukamotoResult['label']) }}"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold mb-1 uppercase tracking-wider opacity-80">Rekomendasi Tindakan</h4>
+                                    <p class="text-sm font-medium">{{ getRecommendation($tsukamotoResult['label']) }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             @else
-                <div class="bg-gray-50 dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl h-full min-h-[400px] flex flex-col items-center justify-center p-8 text-center transition-colors">
-                    <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 text-4xl mb-4">
-                        <i class="fas fa-robot"></i>
+                <div class="bg-gray-50/50 dark:bg-gray-800/50 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl h-full min-h-[500px] flex flex-col items-center justify-center p-8 text-center transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-800 group">
+                    <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 text-4xl mb-6 shadow-inner group-hover:scale-110 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-all duration-500">
+                        <i class="fas fa-robot animate-pulse"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-600 dark:text-gray-300 mb-2">Menunggu Input Anda</h3>
-                    <p class="text-gray-500 dark:text-gray-400 max-w-sm">
-                        Sesuaikan parameter pada form di samping dan klik tombol <strong>Hitung Prioritas</strong> untuk melihat hasil analisis AI.
+                    <h3 class="text-2xl font-black text-gray-700 dark:text-gray-200 mb-3 tracking-tight">Menunggu Input Anda</h3>
+                    <p class="text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed">
+                        Sesuaikan parameter pada form di samping dan klik tombol <strong class="text-blue-600 dark:text-blue-400">Hitung Prioritas</strong> untuk melihat hasil analisis AI.
                     </p>
                 </div>
             @endif
@@ -241,7 +362,65 @@
         syncInputs('severity', 'severity_input');
         syncInputs('impact', 'impact_input');
         syncInputs('affected_users', 'affected_users_input');
+
+        window.fillSampleData = function(sev, imp, usr) {
+            const sevSlider = document.getElementById('severity');
+            const impSlider = document.getElementById('impact');
+            const usrSlider = document.getElementById('affected_users');
+            
+            const sevInput = document.getElementById('severity_input');
+            const impInput = document.getElementById('impact_input');
+            const usrInput = document.getElementById('affected_users_input');
+
+            animateValue(sevSlider, sevInput, parseInt(sevSlider.value || 0), sev, 400);
+            animateValue(impSlider, impInput, parseInt(impSlider.value || 0), imp, 400);
+            animateValue(usrSlider, usrInput, parseInt(usrSlider.value || 0), usr, 400);
+        };
+
+        function animateValue(slider, input, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                // easeOutQuart
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                const currentVal = Math.floor(start + (end - start) * easeProgress);
+                
+                slider.value = currentVal;
+                input.value = currentVal;
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    slider.value = end;
+                    input.value = end;
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Loading state on submit
+        const form = document.querySelector('form');
+        const btnText = document.getElementById('btn-text');
+        const btnLoading = document.getElementById('btn-loading');
+        
+        if (form) {
+            form.addEventListener('submit', function() {
+                btnText.classList.add('hidden');
+                btnLoading.classList.remove('hidden');
+                document.querySelector('button[type="submit"]').classList.add('opacity-80', 'cursor-not-allowed');
+            });
+        }
     });
 </script>
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+</style>
 @endsection
 @endsection

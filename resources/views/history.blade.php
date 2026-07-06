@@ -66,6 +66,7 @@
                         <th class="p-4 font-semibold text-gray-600 dark:text-gray-300 text-sm whitespace-nowrap text-center border-l border-gray-200 dark:border-gray-700">Mamdani</th>
                         <th class="p-4 font-semibold text-gray-600 dark:text-gray-300 text-sm whitespace-nowrap text-center border-l border-gray-200 dark:border-gray-700">Sugeno</th>
                         <th class="p-4 font-semibold text-gray-600 dark:text-gray-300 text-sm whitespace-nowrap text-center border-l border-gray-200 dark:border-gray-700">Tsukamoto</th>
+                        <th class="p-4 font-semibold text-gray-600 dark:text-gray-300 text-sm whitespace-nowrap text-center border-l border-gray-200 dark:border-gray-700 w-16">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700/50">
@@ -116,10 +117,11 @@
                                 @csrf
                                 @method('DELETE')
                                 <input type="hidden" name="history_id" value="{{ $history->id }}" />
-                                <button type="button" class="js-delete-history-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-sm transition-colors"
+                                <button type="button" class="js-delete-history-btn w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-red-100 text-gray-400 hover:text-red-600 dark:bg-gray-700 dark:hover:bg-red-900/40 dark:text-gray-500 dark:hover:text-red-400 transition-colors mx-auto"
                                     data-delete-url="{{ route('history.destroy', $history->id) }}"
-                                    data-history-label="Riwayat {{ $history->created_at->format('d M Y, H:i') }}">
-                                    Hapus
+                                    data-history-label="Riwayat {{ $history->created_at->format('d M Y, H:i') }}"
+                                    title="Hapus Riwayat">
+                                    <i class="fas fa-trash-alt text-sm"></i>
                                 </button>
                             </form>
                         </td>

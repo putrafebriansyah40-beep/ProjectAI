@@ -26,6 +26,18 @@
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-6 mb-8">
         <form action="{{ route('perbandingan.calculate') }}" method="POST">
             @csrf
+
+            <!-- Quick Sample Data -->
+            <div class="mb-5 pb-5 border-b border-gray-100 dark:border-gray-700">
+                <p class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Contoh Data Cepat:</p>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" onclick="fillSampleData(20, 25, 15)" class="px-3 py-1.5 text-xs font-bold bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50 rounded-full transition-colors"><i class="fas fa-bolt text-[10px] mr-1"></i> Ringan</button>
+                    <button type="button" onclick="fillSampleData(50, 45, 40)" class="px-3 py-1.5 text-xs font-bold bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:hover:bg-yellow-900/50 rounded-full transition-colors"><i class="fas fa-exclamation text-[10px] mr-1"></i> Sedang</button>
+                    <button type="button" onclick="fillSampleData(75, 80, 70)" class="px-3 py-1.5 text-xs font-bold bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:hover:bg-orange-900/50 rounded-full transition-colors"><i class="fas fa-exclamation-triangle text-[10px] mr-1"></i> Berat</button>
+                    <button type="button" onclick="fillSampleData(95, 95, 90)" class="px-3 py-1.5 text-xs font-bold bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50 rounded-full transition-colors"><i class="fas fa-fire text-[10px] mr-1"></i> Critical</button>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                 
                 <!-- Severity -->
@@ -50,16 +62,66 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div>
-                    <button type="submit" class="w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-bold shadow-md transition-all">
-                        <i class="fas fa-sync-alt mr-2"></i> Bandingkan
+                <div class="md:col-span-1">
+                    <button type="submit" class="w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-bold shadow hover:shadow-lg transition-all transform hover:-translate-y-0.5 group relative overflow-hidden flex items-center justify-center">
+                        <span id="btn-text" class="flex items-center"><i class="fas fa-balance-scale mr-2 group-hover:rotate-12 transition-transform duration-300"></i> Bandingkan</span>
+                        <span id="btn-loading" class="hidden flex items-center"><i class="fas fa-circle-notch fa-spin mr-2"></i> Memproses...</span>
+                        <div class="absolute inset-0 h-full w-full bg-white/20 scale-0 group-active:scale-100 rounded-xl transition-transform duration-300 opacity-0 group-active:opacity-100"></div>
                     </button>
                 </div>
             </div>
         </form>
     </div>
 
+    <!-- Results Section -->
     @if(isset($mamdaniResult))
+    <div class="animate-fade-in-up">    <!-- Section Proses Perhitungan -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-8">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-100 dark:border-gray-700 pb-3">
+                <i class="fas fa-microchip text-blue-500 mr-2"></i> Proses Perhitungan
+            </h3>
+            <div class="flex items-center justify-between relative px-2 sm:px-12">
+                <!-- Garis penghubung -->
+                <div class="absolute left-6 right-6 sm:left-16 sm:right-16 top-5 h-1 bg-gray-200 dark:bg-gray-700 z-0"></div>
+                <div class="absolute left-6 right-6 sm:left-16 sm:right-16 top-5 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 z-0 animate-pulse"></div>
+                
+                <!-- Steps -->
+                <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg animate-bounce" style="animation-delay: 0s;">
+                        <i class="fas fa-keyboard"></i>
+                    </div>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 text-center">Input<br>Data</span>
+                </div>
+                
+                <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg animate-bounce" style="animation-delay: 0.1s;">
+                        <i class="fas fa-random"></i>
+                    </div>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 text-center">Fuzzifikasi</span>
+                </div>
+                
+                <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-cyan-600 text-white flex items-center justify-center shadow-lg animate-bounce" style="animation-delay: 0.2s;">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 text-center">Evaluasi<br>Rule</span>
+                </div>
+                
+                <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-cyan-500 text-white flex items-center justify-center shadow-lg animate-bounce" style="animation-delay: 0.3s;">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 text-center">Defuzzifikasi</span>
+                </div>
+                
+                <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white flex items-center justify-center shadow-lg animate-bounce" style="animation-delay: 0.4s;">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <span class="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 text-center">Hasil<br>Prioritas</span>
+                </div>
+            </div>
+        </div>
         @php
             // Helper function for colors
             function getLabelColor($label) {
@@ -254,15 +316,71 @@
             </div>
         </div>
     @else
-        <div class="bg-gray-50 dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl py-20 flex flex-col items-center justify-center text-center">
-            <div class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 text-3xl mb-4">
-                <i class="fas fa-balance-scale"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-600 dark:text-gray-300 mb-2">Tentukan Parameter di Atas</h3>
-            <p class="text-gray-500 dark:text-gray-400 max-w-sm">
-                Isi nilai Severity, Impact, dan Affected Users, lalu klik Bandingkan untuk melihat perbedaan hasil ketiga metode secara komprehensif.
-            </p>
+    <div class="bg-gray-50/50 dark:bg-gray-800/50 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl h-64 flex flex-col items-center justify-center p-8 text-center transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-800 group">
+        <div class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 text-3xl mb-4 shadow-inner group-hover:scale-110 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-all duration-500">
+            <i class="fas fa-balance-scale animate-pulse"></i>
         </div>
+        <h3 class="text-xl font-bold text-gray-600 dark:text-gray-300 mb-2">Menunggu Data Input</h3>
+        <p class="text-gray-500 dark:text-gray-400 max-w-md">
+            Masukkan parameter pada form di atas lalu klik tombol <strong>Bandingkan</strong> untuk melihat perbedaan hasil ketiga metode secara langsung.
+        </p>
+    </div>
     @endif
 </div>
+
+@section('scripts')
+<script>
+    window.fillSampleData = function(sev, imp, usr) {
+        const sevInput = document.getElementById('severity');
+        const impInput = document.getElementById('impact');
+        const usrInput = document.getElementById('affected_users');
+
+        animateValue(sevInput, parseInt(sevInput.value || 0), sev, 400);
+        animateValue(impInput, parseInt(impInput.value || 0), imp, 400);
+        animateValue(usrInput, parseInt(usrInput.value || 0), usr, 400);
+    };
+
+    function animateValue(input, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            // easeOutQuart
+            const easeProgress = 1 - Math.pow(1 - progress, 4);
+            const currentVal = Math.floor(start + (end - start) * easeProgress);
+            
+            input.value = currentVal;
+            
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                input.value = end;
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // Loading state on submit
+    const form = document.querySelector('form');
+    const btnText = document.getElementById('btn-text');
+    const btnLoading = document.getElementById('btn-loading');
+    
+    if (form) {
+        form.addEventListener('submit', function() {
+            btnText.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
+            document.querySelector('button[type="submit"]').classList.add('opacity-80', 'cursor-not-allowed');
+        });
+    }
+</script>
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+</style>
+@endsection
 @endsection
