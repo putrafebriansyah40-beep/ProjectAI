@@ -85,7 +85,7 @@ Pemisahan logika adalah inti dari keamanan desain sistem ini. Sistem AI diletakk
 
 ### Halaman Home
 
-![Screenshot Home](docs/assets/Home.png)
+<img width="1920" height="1080" alt="Home" src="https://github.com/user-attachments/assets/48a725c5-71b0-44aa-9626-a9beedca892e" />
 
 *Menampilkan hero section dan alur sistem.*
 
