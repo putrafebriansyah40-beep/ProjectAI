@@ -49,12 +49,18 @@ Pemisahan logika adalah inti dari keamanan desain sistem ini. Sistem AI diletakk
  ┃ ┣ 📂 Models
  ┃ ┃ ┗ 📜 Bug.php                       # Model ORM untuk tabel riwayat
  ┃ ┗ 📂 Services                        # 🔥 CORE AI ENGINE
- ┃   ┣ 📜 FuzzyMamdaniService.php       # Logika Mamdani murni
- ┃   ┣ 📜 FuzzySugenoService.php        # Logika Sugeno murni
- ┃   ┗ 📜 FuzzyTsukamotoService.php     # Logika Tsukamoto murni
+ ┃   ┣ 📜 FuzzyRuleService.php          # Logika Evaluasi dan Fuzzifikasi Independen
+ ┃   ┣ 📜 FuzzyMamdaniService.php       # Logika Defuzzifikasi Mamdani
+ ┃   ┣ 📜 FuzzySugenoService.php        # Logika Defuzzifikasi Sugeno
+ ┃   ┗ 📜 FuzzyTsukamotoService.php     # Logika Defuzzifikasi Tsukamoto
  ┣ 📂 database
  ┃ ┗ 📂 migrations
  ┃   ┗ 📜 xxxx_create_bugs_table.php    # Skema RDBMS
+ ┣ 📂 docs                              # Dokumentasi Proyek & Laporan
+ ┃   ┣ 📜 Setup_Guide.md
+ ┃   ┣ 📜 User_Manual.md
+ ┃   ┣ 📜 Fuzzy_Logic_Explanation.md
+ ┃   ┗ 📜 Laporan_UAS_AI.md
  ┣ 📂 resources
  ┃ ┣ 📂 css
  ┃ ┃ ┗ 📜 app.css                       # Konfigurasi Tailwind v4
@@ -66,8 +72,11 @@ Pemisahan logika adalah inti dari keamanan desain sistem ini. Sistem AI diletakk
  ┃   ┣ 📜 perbandingan.blade.php
  ┃   ┣ 📜 history.blade.php
  ┃   ┗ 📜 tentang.blade.php
- ┗ 📜 routes
-   ┗ 📜 web.php                         # Definisi Endpoint Routing
+ ┣ 📂 routes
+ ┃ ┗ 📜 web.php                         # Definisi Endpoint Routing
+ ┗ 📂 tests
+   ┗ 📂 Feature
+     ┗ 📜 WebRoutingTest.php            # Automated Integration Tests
 ```
 
 ## 📸 Antarmuka Sistem (UI)
