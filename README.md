@@ -83,10 +83,23 @@ Pemisahan logika adalah inti dari keamanan desain sistem ini. Sistem AI diletakk
 
 *Sistem ini mendukung transisi halus warna **Hitam, Biru, dan Cyan** bergaya modern Dashboard.*
 
-*(Placeholder Tangkapan Layar)*
-- `[Screenshot Halaman Home]` - Menampilkan hero section dan alur sistem.
-- `[Screenshot Halaman Simulasi]` - Menampilkan *slider* reaktif & *Card* Komparasi berwarna dinamis.
-- `[Screenshot Halaman Riwayat]` - Menampilkan tabel statistik rekam jejak prioritas.
+### Halaman Home
+
+![Screenshot Home](docs/assets/Home.png)
+
+*Menampilkan hero section dan alur sistem.*
+
+### Halaman Simulasi
+
+![Screenshot Simulasi](docs/assets/Simulasi.png)
+
+*Menampilkan slider reaktif & Card Komparasi berwarna dinamis.*
+
+### Halaman Riwayat
+
+![Screenshot Riwayat](docs/assets/Riwayat.png)
+
+*Menampilkan tabel statistik rekam jejak prioritas.*
 
 ## 🚀 Panduan Instalasi dan Menjalankan Proyek
 
